@@ -1,0 +1,139 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'rbconfig'
+require 'calabash-perfecto/helpers'
+require 'calabash-perfecto/java_keystore'
+require 'calabash-perfecto/env'
+
+
+require 'optparse'
+options = {}
+optparse = OptionParser.new do|opts|   
+	opts.banner = "Usage: calabash-perfecto [options] apk-file/iap-file "    
+	# Define the options, and what they do   
+
+	options[:install] = false   
+	opts.on( '-i', '--install', 'Install app before testing' ) do     
+		options[:install] = true   
+	end    
+
+  options[:appName] = nil   
+	opts.on( '-a APPNAME', '--app APPNAME', 'App name is APPNAME' ) do|appName|     
+		options[:appName] = appName   
+	end    
+
+	options[:cloud] = nil   
+	opts.on( '-c CLOUD', '--cloud CLOUD', 'Connect to cloud CLOUD' ) do|cloud|     
+		options[:cloud] = cloud   
+	end    
+
+  options[:user] = nil   
+	opts.on( '-u USER', '--user USER', 'Connect as USER' ) do|user|     
+		options[:user] = user   
+	end    
+
+  options[:password] = nil   
+	opts.on( '-p PASSWORD', '--password PASSWORD', 'Connect with PASSWORD' ) do|password|     
+		options[:password] = password   
+	end    
+
+  options[:device] = nil   
+	opts.on( '-d DEVICE_ID', '--device DEVICE_ID', 'Connect to device with id  DEVICE_ID' ) do|device|     
+		options[:device] = device   
+	end    
+
+  options[:device] = nil   
+	opts.on( '-r REPORT_DIR', '--report REPORT_DIR', 'Download reports to directory REPORT_DIR' ) do|report|     
+		options[:report] = report   
+	end    
+
+	# This displays the help screen, all programs are   
+	# assumed to have this option.   
+	opts.on( '-h', '--help', 'Display this screen' ) do     
+		puts opts     
+		exit   
+	end 
+
+end 
+
+optparse.parse!  
+if options[:install]
+  ENV["PERFECTO_PARAM_INSTALL"] = 'true'
+  #puts "PARSE: Install before every test"
+end 
+if options[:appName]
+  ENV["PERFECTO_PARAM_APPNAME"] = options[:appName]
+  #puts "PARSE: App name "+ENV["PERFECTO_PARAM_APPNAME"]
+end 
+if options[:cloud]
+  ENV["PERFECTO_PARAM_CLOUD"] = options[:cloud]
+  #puts "PARSE: Connecting to cloud "+ENV["PERFECTO_PARAM_CLOUD"]
+end 
+if options[:user]
+  ENV["PERFECTO_PARAM_USER"] = options[:user]
+  #puts "PARSE: Connecting as "+ENV["PERFECTO_PARAM_USER"]
+end 
+if options[:password]
+  ENV["PERFECTO_PARAM_PASSWORD"] = options[:password]
+  #puts "PARSE: Connecting with password "+ENV["PERFECTO_PARAM_PASSWORD"]
+end 
+if options[:device]
+  ENV["PERFECTO_PARAM_DEVICE"] = options[:device]
+  #puts "PARSE: Connecting to device with id "+ENV["PERFECTO_PARAM_DEVICE"]
+end
+if options[:report]
+  ENV["PERFECTO_REPORT_DIR"] = options[:report]
+  #puts "PARSE: Downloading reports to "+ENV["PERFECTO_REPORT_DIR"]
+end
+
+ENV["PERFECTO_APP_FILE"] =  ARGV.shift  
+#puts "PARSE: App file : "+ENV["PERFECTO_APP_FILE"] 
+
+#sleep 5
+#puts "PARSE: exiting ..."
+#exit
+
+
+ENV["CALABASH_MODE"] = 'calabash-perfecto'
+
+# for ruby 1.9.1 and earlier
+unless defined? RbConfig.ruby
+  def RbConfig.ruby
+    File.join(RbConfig::CONFIG["bindir"], RbConfig::CONFIG["ruby_install_name"] + RbConfig::CONFIG["EXEEXT"])
+  end
+end
+
+
+if File.exist? "features/support/app_life_cycle_hooks.rb"
+  content = IO.read("features/support/app_life_cycle_hooks.rb")
+
+end
+
+
+require File.join(File.dirname(__FILE__), "calabash-perfecto-helpers")
+require File.join(File.dirname(__FILE__), "calabash-perfecto-generate")
+require File.join(File.dirname(__FILE__), "calabash-perfecto-build")
+require File.join(File.dirname(__FILE__), "calabash-perfecto-run")
+require File.join(File.dirname(__FILE__), "calabash-perfecto-setup")
+require File.join(File.dirname(__FILE__), "calabash-perfecto-console")
+
+@features_dir = File.join(FileUtils.pwd, "features")
+@support_dir = File.join(@features_dir, "support")
+@source_dir = File.join(File.dirname(__FILE__), '..', 'features-skeleton')
+@script_dir = File.join(File.dirname(__FILE__), '..', 'scripts')
+
+def is_apk_file?(file_path)
+  file_path.end_with? ".apk" and File.exist? file_path
+end
+
+def relative_to_full_path(file_path)
+  File.expand_path(file_path)
+end
+
+Env.exit_if_env_not_set_up
+if ARGV.empty? or not is_apk_file?(ARGV.first)
+  exit calabash_run()
+else
+  exit calabash_run(relative_to_full_path(ARGV.shift))
+end
