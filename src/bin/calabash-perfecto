@@ -5,13 +5,18 @@ require 'rbconfig'
 require 'calabash-perfecto/helpers'
 require 'calabash-perfecto/java_keystore'
 require 'calabash-perfecto/env'
-
+require 'calabash-perfecto/version'
 
 require 'optparse'
 options = {}
 optparse = OptionParser.new do|opts|   
 	opts.banner = "Usage: calabash-perfecto [options] apk-file/iap-file "    
 	# Define the options, and what they do   
+
+	options[:version] = false   
+	opts.on( '-v', '--version', 'Get version' ) do     
+		options[:version] = true   
+	end    
 
 	options[:install] = false   
 	opts.on( '-i', '--install', 'Install app before testing' ) do     
@@ -58,6 +63,10 @@ optparse = OptionParser.new do|opts|
 end 
 
 optparse.parse!  
+if options[:version]
+  puts "calabash-perfecto #{Calabash::Perfecto::VERSION}"
+  exit
+end 
 if options[:install]
   ENV["PERFECTO_PARAM_INSTALL"] = 'true'
   #puts "PARSE: Install before every test"
