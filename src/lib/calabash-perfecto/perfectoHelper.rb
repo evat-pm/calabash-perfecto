@@ -63,6 +63,9 @@ end
       if ENV["PERFECTO_PARAM_APPNAME"] != nil
         $PerfectoAppName = ENV["PERFECTO_PARAM_APPNAME"]
       end
+      if ENV["PERFECTO_UPLOAD_LOCATION"] != nil
+        $PerfectoUploadLocation = ENV["PERFECTO_UPLOAD_LOCATION"]
+      end
       if ENV["PERFECTO_PARAM_CLOUD"] != nil
         $PerfectoCloud = ENV["PERFECTO_PARAM_CLOUD"]
       end
@@ -103,7 +106,7 @@ end
     # UPLOAD
     # TODO - file name + apk/ipa 
     appFileNoPath = getAppFileNoPath(file)
-    encodedKey = "PUBLIC:calabash/"+appFileNoPath
+    encodedKey = "#{$PerfectoUploadLocation}/"+appFileNoPath
     debug( "Uploading to "+encodedKey) 
     url = "https://#{$PerfectoCloud}/services/repositories/media/#{encodedKey}?operation=upload&user=#{$PerfectoUser}&password=#{$PerfectoPassword}&overwrite=true";
     debug( url)

@@ -23,7 +23,12 @@ optparse = OptionParser.new do|opts|
 		options[:install] = true   
 	end    
 
-  options[:appName] = nil   
+  	options[:location] = nil   
+	opts.on( '-l LOCATION', '--location LOCATION', 'Location in repository for uploading apk/ipa file' ) do|location|     
+		options[:location] = location   
+	end    
+
+  	options[:appName] = nil   
 	opts.on( '-a APPNAME', '--app APPNAME', 'App name is APPNAME' ) do|appName|     
 		options[:appName] = appName   
 	end    
@@ -70,6 +75,10 @@ end
 if options[:install]
   ENV["PERFECTO_PARAM_INSTALL"] = 'true'
   #puts "PARSE: Install before every test"
+end 
+if options[:location]
+  ENV["PERFECTO_UPLOAD_LOCATION"] = options[:location]
+  #puts "PARSE: Upload location "+ENV["PERFECTO_UPLOAD_LOCATION"]
 end 
 if options[:appName]
   ENV["PERFECTO_PARAM_APPNAME"] = options[:appName]

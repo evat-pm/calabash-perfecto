@@ -15,6 +15,8 @@ require ENV["CALABASH_MODE"]+'/cucumber'
 #$PerfectoAppFile = "<APK_OR_IPA_FILE>"
 # Application name (for starting the app)
 #$PerfectoAppName = "<YOUR_APP_NAME>"
+# Where to upload the apk/ipa file to (directory in repository)
+$PerfectoUploadLocation = "PUBLIC:calabash"
 
 # Connection credentials 
 #$PerfectoCloud = "<YOUR_PERFECTO_CLOUD_HERE>"
