@@ -100,7 +100,8 @@ end
     
     puts "Uninstalling ..."
     # Do not raise error because application may not be installed
-    runCommand("application", "uninstall", "&param.name=" + $PerfectoAppName , false)
+    encodedAppName = CGI.escape("#{$PerfectoAppName}") 
+    runCommand("application", "uninstall", "&param.name=#{encodedAppName}" , false)
    
     puts "Uploading ..."
     # UPLOAD
