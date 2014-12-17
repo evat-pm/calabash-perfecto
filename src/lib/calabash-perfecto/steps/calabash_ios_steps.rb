@@ -14,6 +14,8 @@ end
 #Then /^I (?:press|touch) button number (\d+)$/ do |index|
 #Then /^I (?:press|touch) the "([^\"]*)" button$/ do |name|
 #Then /^I (?:press|touch) list item number (\d+)$/ do |index|
+#Then /^I (?:press|touch) "([^\"]*)"$/ do |name|
+
 
 # Moved to enter_text_steps.rb
 #Then /^I enter "([^\"]*)" into (?:input|text) field number (\d+)$/ do |text, index|
@@ -33,10 +35,6 @@ end
 # -- Touch --#
 Then /^I (?:press|touch) on screen (\d+) from the left and (\d+) from the top$/ do |x, y|
   PM_click_on_screen(x,y)
-end
-
-Then /^I (?:press|touch) "([^\"]*)"$/ do |name|
-  PM_unsupported()
 end
 
 Then /^I (?:press|touch) (\d+)% right and (\d+)% down from "([^\"]*)" $/ do |x,y,name|

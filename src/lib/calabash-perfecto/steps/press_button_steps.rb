@@ -16,8 +16,9 @@ Then /^I press view with id "([^\"]*)"$/ do |view_id|
   PM_unsupported()
 end
 
-Then /^I press "([^\"]*)"$/ do |identifier|
-  PM_element_click_by_id(identifier)
+Then /^I (?:press|touch) "([^\"]*)"$/ do |name|
+#Then /^I press "([^\"]*)"$/ do |identifier|
+  PM_element_click_by_id(name)
 end
 
 Then /^I click on screen (\d+)% from the left and (\d+)% from the top$/ do |x, y|
