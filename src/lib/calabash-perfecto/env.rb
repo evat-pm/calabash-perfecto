@@ -1,3 +1,4 @@
+require "helpers"
 
 class Env
   require 'win32/registry' if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/

@@ -5,9 +5,6 @@ require 'cgi'
 # Init functions
 ##############################################################################################
 
-
-def initialize
-end
    
     
 def startPerfectoMobileCloud  

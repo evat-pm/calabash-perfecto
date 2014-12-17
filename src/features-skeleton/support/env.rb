@@ -28,7 +28,7 @@ $PerfectoUploadLocation = "PUBLIC:calabash"
 $PerfectoReinstallEveryTest = false
 
 # Directory where reports should be downloaded to
-$PerfectoReportDir = "<YOUR_REPORT_DIR>"
+#$PerfectoReportDir = "<YOUR_REPORT_DIR>"
 
 # Default timeout for commands 
 $defaultTimeout=2

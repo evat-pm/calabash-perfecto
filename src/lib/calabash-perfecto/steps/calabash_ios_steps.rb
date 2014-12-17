@@ -202,9 +202,7 @@ end
 
 ### Device orientation ###
 Then /^I rotate device (left|right)$/ do |dir|
-  dir = dir.to_sym
-  rotate(dir)
-  sleep(5)#SERVO wait
+  PM_unsupported()
 end
 
 Then /^I send app to background for (\d+) seconds$/ do |secs|
