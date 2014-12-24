@@ -126,7 +126,7 @@ end
     runCommand("application", "install", "&param.instrument=noinstrument&param.file=" + encodedKey , true)
     # Close perfecto and execution
     puts "Install  successful"
-    sleep(10)
+    sleep(5)
   end
   
   def getAppFileNoPath(file)
