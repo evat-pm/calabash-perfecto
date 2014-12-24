@@ -575,8 +575,7 @@ def runCommand(command, subcommand, param, raiseError)
     urlStr = "https://#{$PerfectoCloud}/services/executions/#{@runID}?user=#{$PerfectoUser}&password=#{$PerfectoPassword}&operation=command&command=#{command}&subcommand=#{subcommand}&param.handsetId=#{$PerfectoDevice}#{param}"
     uri = URI.parse ("#{urlStr}")
     debug ("CALL PERFECTO :  run CMD : #{urlStr}")
-
-    sleep 10         
+           
     http = Net::HTTP.new(uri.host, uri.port)
 		http.use_ssl = true
 		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
