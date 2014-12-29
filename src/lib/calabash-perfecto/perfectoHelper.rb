@@ -107,7 +107,8 @@ end
     # UPLOAD
     # TODO - file name + apk/ipa 
     appFileNoPath = getAppFileNoPath(file)
-    encodedKey = "#{$PerfectoUploadLocation}/"+appFileNoPath
+    encodedAppFileNoPath = URI::encode(appFileNoPath) 
+    encodedKey = "#{$PerfectoUploadLocation}/"+encodedAppFileNoPath
     debug( "Uploading to "+encodedKey) 
     url = "https://#{$PerfectoCloud}/services/repositories/media/#{encodedKey}?operation=upload&user=#{$PerfectoUser}&password=#{$PerfectoPassword}&overwrite=true";
     debug( url)
