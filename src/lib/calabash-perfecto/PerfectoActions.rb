@@ -251,7 +251,7 @@ def PM_obj_click_by_text(text)
   # Fails if text is not the full text of the object
   debug(  "PERFECTO_ACTIONS:PM_obj_click_by_text")
   val = URI::encode(text)
-  param = "&param.value=#{val}&param.by=linkText"
+  param = "&param.value=#{val}&param.by=partialLinkText"
   runCommand("application.element","click",param,true) 
 end
 
@@ -464,7 +464,7 @@ def PM_validate_by_text_obj(text, appear, timeout)
     # Fails if text is not the full text of the object
     debug(  "PM_validate_by_text_obj")
     val = URI::encode(text)
-    param = "&param.value=#{val}&param.by=linkText"
+    param = "&param.value=#{val}&param.by=partialLinkText"
     if (timeout != nil and timeout.to_i > 0)
       param += "&param.timeout=#{timeout}"
     end
