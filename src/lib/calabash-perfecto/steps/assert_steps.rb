@@ -10,7 +10,9 @@ Then /^I should see "([^\"]*)"$/ do |text|
   PM_validate_by_text_obj(text,true,0) 
 end
 
-Then /^I (?:should)? see text containing "([^\"]*)"$/ do |text|
+Then /^I (?:should)?(?: )?see text containing "([^\"]*)"$/ do |text|
+#Then /^I  see text containing "([^\"]*)"$/ do |text|
+#Then /^I see text containing "([^\"]*)"$/ do |text|
 #Then /^I should see text containing "([^\"]*)"$/ do |text|
   PM_validate_by_text_contain(text,true)
 end
