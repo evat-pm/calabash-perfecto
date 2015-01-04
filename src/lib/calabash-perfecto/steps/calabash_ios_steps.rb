@@ -225,11 +225,11 @@ Then /^I see the "([^\"]*)"$/ do |text|
   macro %Q|I should see "#{text}"|
 end
 
-Then /^I (?:should)? see text starting with "([^\"]*)"$/ do |text|
+Then /^I (?:should)?(?: )?see text starting with "([^\"]*)"$/ do |text|
   PM_validate_by_text_start(text,true)
 end
 
-Then /^I (?:should)? see text ending with "([^\"]*)"$/ do |text|
+Then /^I (?:should)?(?: )?see text ending with "([^\"]*)"$/ do |text|
   PM_validate_by_text_end(text,true)
 end
 
