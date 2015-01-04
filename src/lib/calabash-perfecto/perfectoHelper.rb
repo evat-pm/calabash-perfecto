@@ -88,13 +88,18 @@ end
     end
  end
   
-  def installPerfecto
-    # User requests to install and install had not yet been performed --> install
-    if !$PerfectoInstallFlag and $PerfectoReinstallEveryTest
-      upload_and_install_app($PerfectoAppFile)
-      $PerfectoInstallFlag = true;
-    end
-  end
+ def installPerfecto
+   # User requests to reinstall each scenario --> set value of install flag to false
+   if $PerfectoReinstallEveryTest
+     $PerfectoInstallFlag = false;
+   end
+  
+   # User requests to install and install had not yet been performed --> install
+   if !$PerfectoInstallFlag and $PerfectoReinstallEveryTest
+     upload_and_install_app($PerfectoAppFile)
+     $PerfectoInstallFlag = true;
+   end
+ end
   
   def upload_and_install_app(file) 
     
