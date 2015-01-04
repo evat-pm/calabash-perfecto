@@ -1,6 +1,6 @@
 
 Then /^I wait$/ do
-  PM_wait(2)
+  PM_wait($defaultTimeout)
 end
 
 Then /^I wait for ([\d\.]+) second(?:s)?$/ do |num_seconds|
