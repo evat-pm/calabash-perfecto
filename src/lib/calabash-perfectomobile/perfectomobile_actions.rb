@@ -12,7 +12,7 @@ def startPMCloud
     puts "Connecting to Perfecto Mobile cloud ..."
     debug ("CLOUD : "+$PMCloud)
     urlStr = "https://#{$PMCloud}/services/executions?user=#{$PMUser}&password=#{$PMPassword}&operation=start"
-    uri = URI.parse ("#{urlStr}")
+    uri = URI.parse("#{urlStr}")
         
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
@@ -32,11 +32,11 @@ end
 
 def openDevice()
     puts "Opening device ..."
-    runCommand("handset","open","",true)
+    PM_runCommand("handset","open","",true)
     
     ## getting the device os [iphone / Android ]
     urlStr=  "https://#{$PMCloud}/services/handsets/#{$PMDevice}?user=#{$PMUser}&password=#{$PMPassword}&operation=info"
-    uri = URI.parse ("#{urlStr}")
+    uri = URI.parse("#{urlStr}")
          
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
@@ -56,7 +56,7 @@ end
 def startApp()
         puts "Starting app ..."
         encodedAppName = CGI.escape("#{$PMAppName}") 
-        runCommand("application","open","&param.name=#{encodedAppName}",true)  
+        PM_runCommand("application","open","&param.name=#{encodedAppName}",true)  
 end
     
 ##############################################################################################
@@ -66,19 +66,19 @@ end
 def PM_press_phone_back_button()
   debug( "PM_press_phone_back_button")
   param = "&param.keySequence=BACK"
-  runCommand("presskey","",param,true)  
+  PM_runCommand("presskey","",param,true)  
 end
 
 def PM_press_phone_menu_button()
   debug(  "PM_press_phone_back_button")
   param = "&param.keySequence=MENU"
-  runCommand("presskey","",param,true)  
+  PM_runCommand("presskey","",param,true)  
 end
 
 def PM_press_phone_enter_button()
   debug(  "PM_press_phone_back_button")
   param = "&param.keySequence=ENTER"
-  runCommand("presskey","",param,true)  
+  PM_runCommand("presskey","",param,true)  
 end
 
 def PM_swipe_right() 
@@ -119,7 +119,7 @@ def PM_swipe(startPoint,endPoint,duration)
   encodedStartPoint = CGI.escape(startPoint)
   encodedEndPoint = CGI.escape(endPoint)
   param = "&param.start=#{encodedStartPoint}&param.end=#{encodedEndPoint}&param.duration=#{duration}"
-  runCommand("touch","swipe",param,true)    
+  PM_runCommand("touch","swipe",param,true)    
 end
 ##############################################################################################
 # Rotate
@@ -128,7 +128,7 @@ def PM_rotate(mode)
   # mode = /landscape/portrait
   debug(  "PM_rotate:"+mode)
   param = "&param.state="+mode
-  runCommand("device","rotate",param,true)  
+  PM_runCommand("device","rotate",param,true)  
 end
 
 
@@ -136,7 +136,7 @@ end
 #  screenShot
 def PM_screenShot()
   param = ""
-  runCommand("screen","image",param,true)  
+  PM_runCommand("screen","image",param,true)  
 end
 ##################################################################33
 ##############################################################################################
@@ -152,7 +152,7 @@ end
 #  puts "PM_ACTIONS: PM_wait_for_text : "+text
 #  val = URI::encode(text)
 #  param = "&param.value=#{val}&param.by=linkText"
-#  outcome = runCommand("application.element","find",param,false) 
+#  outcome = PM_runCommand("application.element","find",param,false) 
 #
 #  
 #end
@@ -165,7 +165,7 @@ def PM_toggle_checkbox(checkboxNumber)
   xpath = "//checkbox["+checkboxNumber+"]"
   encodedXpath = URI::encode(xpath)
   param = "&param.value=#{encodedXpath}&param.by=xpath"
-  runCommand("application.element","click",param,true)  
+  PM_runCommand("application.element","click",param,true)  
 
 end
 
@@ -176,15 +176,12 @@ end
 def PM_radiobutton_click_by_text(text)
      debug(  "PM_radiobutton_click_by_text (by xpath):"+text)
      # Example : //radiobutton[text()='Africa']
-     xpath1 = ".//radiobutton[text()='"
+	 xpath1 = ".//radiobutton[text()='"
      xpath2 = "']"
-     encodedXpath1 = URI::encode(xpath1)
-     encodedXpath2 = URI::encode(xpath2)
-     encodedXpath = "#{encodedXpath1}#{text}#{encodedXpath2}" 
-     encodedXpath = CGI.escape(encodedXpath)
-     #puts " >>>>>  #{encodedXpath}"
+     encodedXpath = getEncodedXpath(xpath1, text, xpath2)
+	 #puts " >>>>>  #{encodedXpath}"
      param = "&param.value=#{encodedXpath}&param.by=xpath"
-     runCommand("application.element","click",param,true)  
+     PM_runCommand("application.element","click",param,true)  
      
 end 
 
@@ -193,13 +190,10 @@ def PM_radiobutton_verify_is_clicked(text,clicked)
      # Example : //radiobutton[text()='Africa']
      xpath1 = ".//radiobutton[text()='"
      xpath2 = "']"
-     encodedXpath1 = URI::encode(xpath1)
-     encodedXpath2 = URI::encode(xpath2)
-     encodedXpath = "#{encodedXpath1}#{text}#{encodedXpath2}" 
-     encodedXpath = CGI.escape(encodedXpath)
+     encodedXpath = getEncodedXpath(xpath1, text, xpath2)
      #puts " >>>>>  #{encodedXpath}"
      param = "&param.value=#{encodedXpath}&param.by=xpath&param.property=checked"
-     result = runCommand("application.element","info",param,true)  
+     result = PM_runCommand("application.element","info",param,true)  
      isChecked =  result['returnValue']
      if ("#{isChecked}" != "#{clicked}") 
        raise "Radio button checked - "+isChecked
@@ -216,12 +210,9 @@ def PM_toggle_switch_by_name(name)
 
   xpath1 = ".//switch[@name='"
   xpath2 = "']"
-  encodedXpath1 = URI::encode(xpath1)
-  encodedXpath2 = URI::encode(xpath2)
-  encodedXpath = "#{encodedXpath1}#{name}#{encodedXpath2}" 
-  encodedXpath = CGI.escape(encodedXpath)
+  encodedXpath = getEncodedXpath(xpath1, name, xpath2)
   param = "&param.value=#{encodedXpath}&param.by=xpath"
-  runCommand("application.element","click",param,true)  
+  PM_runCommand("application.element","click",param,true)  
   
 end
 
@@ -230,7 +221,7 @@ def PM_toggle_switch_by_num(number)
   xpath = ".//switch[#{number}]"
   encodedXpath = URI::encode(xpath)
   param = "&param.value=#{encodedXpath}&param.by=xpath"
-  runCommand("application.element","click",param,true)  
+  PM_runCommand("application.element","click",param,true)  
   
 end
 
@@ -244,7 +235,7 @@ end
 #     puts "PM_ACTIONS:PM_button_click_by_text"
 #     val = URI::encode(text)
 #     param = "&param.value=#{val}&param.by=linkText"
-#     runCommand("application.element","click",param,true)  
+#     PM_runCommand("application.element","click",param,true)  
 #end 
 
 def PM_obj_click_by_text(text)
@@ -252,7 +243,7 @@ def PM_obj_click_by_text(text)
   debug(  "PM_ACTIONS:PM_obj_click_by_text")
   val = URI::encode(text)
   param = "&param.value=#{val}&param.by=partialLinkText"
-  runCommand("application.element","click",param,true) 
+  PM_runCommand("application.element","click",param,true) 
 end
 
 def PM_button_find_by_text(text,appear)
@@ -281,27 +272,21 @@ def PM_button_do_by_text(text,action,raise)
      # Do not encode the text - if it has a space it will be escaped later with CGI
      xpath1 = ".//button[text()='"
      xpath2 = "']"
-     encodedXpath1 = URI::encode(xpath1)
-     encodedXpath2 = URI::encode(xpath2)
-     encodedXpath = "#{encodedXpath1}#{text}#{encodedXpath2}" 
-     encodedXpath = CGI.escape(encodedXpath)
+     encodedXpath = getEncodedXpath(xpath1, text, xpath2)
      #puts " >>>>>  #{encodedXpath}"
      param = "&param.value=#{encodedXpath}&param.by=xpath"
   begin
-    return runCommand("application.element",action,param,raise)  
+    return PM_runCommand("application.element",action,param,raise)  
   rescue
     # iPhone - some cases cell object is used as button
     if (@deviceOS == 'iOS')
       debug("PM_ACTIONS:PM_button_click_by_text : trying cell on iPhone")
       xpath1 = ".//cell[@name='"
       xpath2 = "']"
-      encodedXpath1 = URI::encode(xpath1)
-      encodedXpath2 = URI::encode(xpath2)
-      encodedXpath = "#{encodedXpath1}#{text}#{encodedXpath2}" 
-      encodedXpath = CGI.escape(encodedXpath)
+	  encodedXpath = getEncodedXpath(xpath1, text, xpath2)
       #puts " >>>>>  #{encodedXpath}"
       param = "&param.value=#{encodedXpath}&param.by=xpath"
-      return runCommand("application.element",action,param,raise)
+      return PM_runCommand("application.element",action,param,raise)
     else
       raise $!
     end
@@ -315,7 +300,7 @@ def PM_button_click_by_number(number)
     xpath = "(//button)["+number+"]"  
     encodedXpath = URI::encode(xpath)
     param = "&param.value=#{encodedXpath}&param.by=xpath"
-    runCommand("application.element","click",param,true)  
+    PM_runCommand("application.element","click",param,true)  
 end 
 
 def PM_image_button_click_by_number(number)
@@ -325,15 +310,11 @@ def PM_image_button_click_by_number(number)
     
   xpath1 = "(//*[contains(@class,'ImageButton')])["
   xpath2 = "]"
-  encodedXpath1 = URI::encode(xpath1)
-  encodedXpath2 = URI::encode(xpath2)
-  encodedXpath = "#{encodedXpath1}#{number}#{encodedXpath2}" 
-  #puts "*******encodedXpath1:"+encodedXpath
-  encodedXpath = CGI.escape(encodedXpath)
+  encodedXpath = getEncodedXpath(xpath1, number, xpath2)
   #puts "*******encodedXpath2:"+encodedXpath
  
   param = "&param.value=#{encodedXpath}&param.by=xpath"
-  runCommand("application.element","click",param,true)  
+  PM_runCommand("application.element","click",param,true)  
 
 end 
 
@@ -342,14 +323,10 @@ def PM_element_click_by_id(id)
   
   xpath1 = "//*[contains(@resourceid,'"
   xpath2 = "')]"
-  encodedXpath1 = URI::encode(xpath1)
-  encodedXpath2 = URI::encode(xpath2)
-  encodedXpath = "#{encodedXpath1}#{id}#{encodedXpath2}" 
-  #puts "*******encodedXpath:"+encodedXpath
-  encodedXpath = CGI.escape(encodedXpath)
+  encodedXpath = getEncodedXpath(xpath1, id, xpath2)
  
   param = "&param.value=#{encodedXpath}&param.by=xpath"
-  runCommand("application.element","click",param,true)  
+  PM_runCommand("application.element","click",param,true)  
 
 end
 
@@ -358,7 +335,7 @@ def PM_click_on_screen(x,y)
   coordinates = "#{x},#{y}"
   encodedCoordinates = CGI.escape(coordinates)
   param = "&param.location=#{encodedCoordinates}&param.duration=1"
-  runCommand("touch","tap",param,true)    
+  PM_runCommand("touch","tap",param,true)    
 end
 
 ##############################################################################################
@@ -373,7 +350,7 @@ def PM_enter_text_to_field_by_num(text,number)
   param = "&param.text=#{encodedText}&param.value=#{encodedXpath}&param.by=xpath"
 
   begin
-    runCommand("application.element","set",param,true)  
+    PM_runCommand("application.element","set",param,true)  
   rescue
     if (@deviceOS == 'iOS')
       debug(  "PM_enter_text_to_field_by_num - trying secure field in ios")
@@ -383,7 +360,7 @@ def PM_enter_text_to_field_by_num(text,number)
       encodedXpath = URI::encode(xpath)
       encodedText = URI::encode(text)
       param = "&param.text=#{encodedText}&param.value=#{encodedXpath}&param.by=xpath"
-      runCommand("application.element","set",param,true)
+      PM_runCommand("application.element","set",param,true)
     else
       raise $!
     end
@@ -393,12 +370,9 @@ end
 def PM_validate_textfield_by_name(name,appear)
   xpath1 = ".//textfield[@name='"
   xpath2 = "']"
-  encodedXpath1 = URI::encode(xpath1)
-  encodedXpath2 = URI::encode(xpath2)
-  encodedXpath = "#{encodedXpath1}#{name}#{encodedXpath2}" 
-  encodedXpath = CGI.escape(encodedXpath)
+  encodedXpath = getEncodedXpath(xpath1, name, xpath2)
   param = "&param.value=#{encodedXpath}&param.by=xpath"
-  pm_rc = runCommand("application.element","find",param,false) 
+  pm_rc = PM_runCommand("application.element","find",param,false) 
   outcome = pm_rc['reason']
 
   debug ("GOT HERE after validation : outcome: #{outcome}") 
@@ -420,13 +394,10 @@ def PM_enter_text_to_field_by_name(text,name)
   debug(  "PM_ACTIONS:PM_enter_text_to_field_by_name")
   xpath1 = ".//textfield[@name='"
   xpath2 = "']"
-  encodedXpath1 = URI::encode(xpath1)
-  encodedXpath2 = URI::encode(xpath2)
-  encodedXpath = "#{encodedXpath1}#{name}#{encodedXpath2}" 
-  encodedXpath = CGI.escape(encodedXpath)
+  encodedXpath = getEncodedXpath(xpath1, name, xpath2)
   encodedText = URI::encode(text)
   param = "&param.text=#{encodedText}&param.value=#{encodedXpath}&param.by=xpath"
-  runCommand("application.element","set",param,true)  
+  PM_runCommand("application.element","set",param,true)  
   
 end
 
@@ -435,15 +406,11 @@ def PM_enter_text_to_field_by_id(text,id)
   
   xpath1 = "//*[contains(@resourceid,'"
   xpath2 = "')]"
-  encodedXpath1 = URI::encode(xpath1)
-  encodedXpath2 = URI::encode(xpath2)
-  encodedXpath = "#{encodedXpath1}#{id}#{encodedXpath2}" 
-  encodedXpath = CGI.escape(encodedXpath)
-
+  encodedXpath = getEncodedXpath(xpath1, id, xpath2)
   encodedText = URI::encode(text)
  
   param = "&param.text=#{encodedText}&param.value=#{encodedXpath}&param.by=xpath"
-  runCommand("application.element","set",param,true)  
+  PM_runCommand("application.element","set",param,true)  
 
 end
 
@@ -453,7 +420,7 @@ def PM_enter_search_field_by_num(text,number)
   encodedXpath = URI::encode(xpath)
   encodedText = URI::encode(text)
   param = "&param.text=#{encodedText}&param.value=#{encodedXpath}&param.by=xpath"
-  runCommand("application.element","set",param,true)  
+  PM_runCommand("application.element","set",param,true)  
 end
 
 ##############################################################################################
@@ -468,7 +435,7 @@ def PM_validate_by_text_obj(text, appear, timeout)
     if (timeout != nil and timeout.to_i > 0)
       param += "&param.timeout=#{timeout}"
     end
-    pm_rc = runCommand("application.element","find",param,false) 
+    pm_rc = PM_runCommand("application.element","find",param,false) 
     outcome = pm_rc['reason']
 
     debug ("GOT HERE after validation : outcome: #{outcome}") 
@@ -496,18 +463,15 @@ end
 def PM_validate_by_text_how(text, appear, how)
     # Succeeds if text is not the full text of the object
 
-    debug ("PM_validate_by_text_contains:"+text)
+    debug("PM_validate_by_text_contains:"+text)
     
     xpath1 = "//*[#{how}(text(),'"
     xpath2 = "')]"
-    encodedXpath1 = URI::encode(xpath1)
-    encodedXpath2 = URI::encode(xpath2)
-    encodedXpath = "#{encodedXpath1}#{text}#{encodedXpath2}" 
-    encodedXpath = CGI.escape(encodedXpath)
+	encodedXpath = getEncodedXpath(xpath1, text, xpath2)
     param = "&param.value=#{encodedXpath}&param.by=xpath"
     
     
-    pm_rc = runCommand("application.element","find",param,false) 
+    pm_rc = PM_runCommand("application.element","find",param,false) 
     outcome = pm_rc['reason']
 
     debug ("GOT HERE after validation : outcome: #{outcome}") 
@@ -524,20 +488,20 @@ end
 
       
 def validateText(text)
-        debug  (" PM VALIDATE TEXT")
+        debug(" PM VALIDATE TEXT")
         param = "&param.timeout=20&param.content=#{text}"
-        runCommand("checkpoint","text",param)  
+        PM_runCommand("checkpoint","text",param)  
     
 end
       
 def buttonclick(text)
         param = "&param.label=#{text}"
-        runCommand("button-text","click",param)  
+        PM_runCommand("button-text","click",param)  
 end
 
 def setEditBox(name, text)
         param = "&param.label=#{name}&param.text=#{text}"
-        runCommand("edit-text","set",param)  
+        PM_runCommand("edit-text","set",param)  
 end
 
 
@@ -546,7 +510,7 @@ end
 ##############################################################################################
 
 def PM_unsupported()
-    raise ("Unsupported by calabash-perfectomobile")
+    raise("Unsupported by calabash-perfectomobile")
 end
 
 def  PM_no_screenshot_needed()
@@ -565,15 +529,22 @@ end
         
 def gotoUrl(url)
     param = "&param.url=#{url}&param.automation=native"
-    runCommand("browser","goto",param)  
+    PM_runCommand("browser","goto",param)  
 end 
+
+def getEncodedXpath(xpath1, value, xpath2)
+    encodedXpath1 = URI::encode(xpath1)
+    encodedXpath2 = URI::encode(xpath2)
+    encodedXpath = "#{encodedXpath1}#{value}#{encodedXpath2}" 
+    return CGI.escape(encodedXpath)
+end
     
 ## Execute command on PM device    
  
-def runCommand(command, subcommand, param, raiseError)
+def PM_runCommand(command, subcommand, param, raiseError)
     
     urlStr = "https://#{$PMCloud}/services/executions/#{@runID}?user=#{$PMUser}&password=#{$PMPassword}&operation=command&command=#{command}&subcommand=#{subcommand}&param.handsetId=#{$PMDevice}#{param}"
-    uri = URI.parse ("#{urlStr}")
+    uri = URI.parse("#{urlStr}")
     debug ("CALL PM : run CMD : #{urlStr}")
            
     http = Net::HTTP.new(uri.host, uri.port)

@@ -31,10 +31,10 @@ $PMLoadedParamsFlag = false
 def afterPM()
   
     puts "Closing device ... "
-    runCommand("handset","close","",true)
+    PM_runCommand("handset","close","",true)
 
     urlStr=  "https://#{$PMCloud}/services/executions/#{@runID}?user=#{$PMUser}&password=#{$PMPassword}&operation=end"
-    uri = URI.parse ("#{urlStr}")
+    uri = URI.parse("#{urlStr}")
          
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
@@ -105,7 +105,7 @@ end
     puts "Uninstalling ..."
     # Do not raise error because application may not be installed
     encodedAppName = CGI.escape("#{$PMAppName}") 
-    runCommand("application", "uninstall", "&param.name=#{encodedAppName}" , false)
+    PM_runCommand("application", "uninstall", "&param.name=#{encodedAppName}" , false)
    
     puts "Uploading ..."
     # UPLOAD
@@ -128,7 +128,7 @@ end
 
     #INSTALL
     puts "Installing ..."
-    runCommand("application", "install", "&param.instrument=noinstrument&param.file=" + encodedKey , true)
+    PM_runCommand("application", "install", "&param.instrument=noinstrument&param.file=" + encodedKey , true)
     puts "Install completed successfully"
     sleep(5)
   end
