@@ -123,7 +123,7 @@ class Env
 
   def self.path_elements
     return [] unless ENV['PATH']
-    ENV['PATH'].split (/[:;]/)
+    ENV['PATH'].split(/[:;]/)
   end
 
   def self.read_attribute_from_monodroid_config(element, attribute)

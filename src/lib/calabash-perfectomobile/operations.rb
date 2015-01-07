@@ -6,13 +6,13 @@ require 'rubygems'
 require 'json'
 require 'socket'
 require 'timeout'
-require 'calabash-perfecto/helpers'
-require 'calabash-perfecto/version'
-require 'calabash-perfecto/env'
+require 'calabash-perfectomobile/helpers'
+require 'calabash-perfectomobile/version'
+require 'calabash-perfectomobile/env'
 require 'retriable'
 require 'cucumber'
-require 'calabash-perfecto/PerfectoActions'
-require 'calabash-perfecto/perfectoHelper'
+require 'calabash-perfectomobile/perfectomobile_actions'
+require 'calabash-perfectomobile/perfectomobile_helper'
 
 module Calabash module Android
 

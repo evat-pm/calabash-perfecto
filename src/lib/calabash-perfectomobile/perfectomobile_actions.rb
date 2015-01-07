@@ -7,11 +7,11 @@ require 'cgi'
 
    
     
-def startPerfectoMobileCloud  
+def startPMCloud  
       
-    puts "Connecting to PerfectoMobile cloud ..."
-    debug ("CLOUD : "+$PerfectoCloud)
-    urlStr = "https://#{$PerfectoCloud}/services/executions?user=#{$PerfectoUser}&password=#{$PerfectoPassword}&operation=start"
+    puts "Connecting to Perfecto Mobile cloud ..."
+    debug ("CLOUD : "+$PMCloud)
+    urlStr = "https://#{$PMCloud}/services/executions?user=#{$PMUser}&password=#{$PMPassword}&operation=start"
     uri = URI.parse ("#{urlStr}")
         
     http = Net::HTTP.new(uri.host, uri.port)
@@ -35,7 +35,7 @@ def openDevice()
     runCommand("handset","open","",true)
     
     ## getting the device os [iphone / Android ]
-    urlStr=  "https://#{$PerfectoCloud}/services/handsets/#{$PerfectoDevice}?user=#{$PerfectoUser}&password=#{$PerfectoPassword}&operation=info"
+    urlStr=  "https://#{$PMCloud}/services/handsets/#{$PMDevice}?user=#{$PMUser}&password=#{$PMPassword}&operation=info"
     uri = URI.parse ("#{urlStr}")
          
     http = Net::HTTP.new(uri.host, uri.port)
@@ -55,7 +55,7 @@ end
 
 def startApp()
         puts "Starting app ..."
-        encodedAppName = CGI.escape("#{$PerfectoAppName}") 
+        encodedAppName = CGI.escape("#{$PMAppName}") 
         runCommand("application","open","&param.name=#{encodedAppName}",true)  
 end
     
@@ -144,12 +144,12 @@ end
 ##############################################################################################
 
 def PM_wait(seconds) 
-  debug(  "PERFECTO_ACTIONS:PM_wait: seconds:"+seconds.to_s)
+  debug(  "PM_ACTIONS:PM_wait: seconds:"+seconds.to_s)
   sleep(seconds.to_i)
 end
 
 #def PM_wait_for_text(text) 
-#  puts "PERFECTO_ACTIONS: PM_wait_for_text : "+text
+#  puts "PM_ACTIONS: PM_wait_for_text : "+text
 #  val = URI::encode(text)
 #  param = "&param.value=#{val}&param.by=linkText"
 #  outcome = runCommand("application.element","find",param,false) 
@@ -161,7 +161,7 @@ end
 # Checkbox
 ##############################################################################################
 def PM_toggle_checkbox(checkboxNumber)
-  debug(  "PERFECTO_ACTIONS:PM_toggle_checkbox")
+  debug(  "PM_ACTIONS:PM_toggle_checkbox")
   xpath = "//checkbox["+checkboxNumber+"]"
   encodedXpath = URI::encode(xpath)
   param = "&param.value=#{encodedXpath}&param.by=xpath"
@@ -241,7 +241,7 @@ end
 #def PM_button_click_by_text_no_xpath(text)
 #    # Don't want to use this because there might be multiple elements with this text
 #    # use PM_button_click_by_text with xpath
-#     puts "PERFECTO_ACTIONS:PM_button_click_by_text"
+#     puts "PM_ACTIONS:PM_button_click_by_text"
 #     val = URI::encode(text)
 #     param = "&param.value=#{val}&param.by=linkText"
 #     runCommand("application.element","click",param,true)  
@@ -249,7 +249,7 @@ end
 
 def PM_obj_click_by_text(text)
   # Fails if text is not the full text of the object
-  debug(  "PERFECTO_ACTIONS:PM_obj_click_by_text")
+  debug(  "PM_ACTIONS:PM_obj_click_by_text")
   val = URI::encode(text)
   param = "&param.value=#{val}&param.by=partialLinkText"
   runCommand("application.element","click",param,true) 
@@ -275,7 +275,7 @@ def PM_button_click_by_text(text)
 end
 
 def PM_button_do_by_text(text,action,raise)
-    debug(  "PERFECTO_ACTIONS:PM_button_click_by_text (by xpath)")
+    debug(  "PM_ACTIONS:PM_button_click_by_text (by xpath)")
      ## for this object find use XPATH with //button and text
      #xpath = ".//button[text()='#{text}']"
      # Do not encode the text - if it has a space it will be escaped later with CGI
@@ -292,7 +292,7 @@ def PM_button_do_by_text(text,action,raise)
   rescue
     # iPhone - some cases cell object is used as button
     if (@deviceOS == 'iOS')
-      debug("PERFECTO_ACTIONS:PM_button_click_by_text : trying cell on iPhone")
+      debug("PM_ACTIONS:PM_button_click_by_text : trying cell on iPhone")
       xpath1 = ".//cell[@name='"
       xpath2 = "']"
       encodedXpath1 = URI::encode(xpath1)
@@ -311,7 +311,7 @@ def PM_button_do_by_text(text,action,raise)
 end 
 
 def PM_button_click_by_number(number)
-    debug(  "PERFECTO_ACTIONS:PM_button_click_by_number")
+    debug(  "PM_ACTIONS:PM_button_click_by_number")
     xpath = "(//button)["+number+"]"  
     encodedXpath = URI::encode(xpath)
     param = "&param.value=#{encodedXpath}&param.by=xpath"
@@ -319,7 +319,7 @@ def PM_button_click_by_number(number)
 end 
 
 def PM_image_button_click_by_number(number)
-  debug(  "PERFECTO_ACTIONS:PM_image_button_click_by_number")
+  debug(  "PM_ACTIONS:PM_image_button_click_by_number")
     
     # XPATH example : (//*[contains(@class,'ImageButton')])[1] 
     
@@ -338,7 +338,7 @@ def PM_image_button_click_by_number(number)
 end 
 
 def PM_element_click_by_id(id)
-  debug( "PERFECTO_ACTIONS:PM_element_click_by_id:"+id)
+  debug( "PM_ACTIONS:PM_element_click_by_id:"+id)
   
   xpath1 = "//*[contains(@resourceid,'"
   xpath2 = "')]"
@@ -354,7 +354,7 @@ def PM_element_click_by_id(id)
 end
 
 def PM_click_on_screen(x,y) 
-  debug( "PERFECTO_ACTIONS:PM_click_on_screen x:"+x.to_s+",y:")
+  debug( "PM_ACTIONS:PM_click_on_screen x:"+x.to_s+",y:")
   coordinates = "#{x},#{y}"
   encodedCoordinates = CGI.escape(coordinates)
   param = "&param.location=#{encodedCoordinates}&param.duration=1"
@@ -366,7 +366,7 @@ end
 ##############################################################################################
 
 def PM_enter_text_to_field_by_num(text,number)
-  debug(  "PERFECTO_ACTIONS:PM_enter_text_to_field_by_num")
+  debug(  "PM_ACTIONS:PM_enter_text_to_field_by_num")
   xpath = ".//textfield[#{number}]"  
   encodedXpath = URI::encode(xpath)
   encodedText = URI::encode(text)
@@ -417,7 +417,7 @@ def PM_enter_text_to_field_by_name(text,name)
   # TODO - test
   # There was no app with named field at time of development to test this predefined step
   
-  debug(  "PERFECTO_ACTIONS:PM_enter_text_to_field_by_name")
+  debug(  "PM_ACTIONS:PM_enter_text_to_field_by_name")
   xpath1 = ".//textfield[@name='"
   xpath2 = "']"
   encodedXpath1 = URI::encode(xpath1)
@@ -448,7 +448,7 @@ def PM_enter_text_to_field_by_id(text,id)
 end
 
 def PM_enter_search_field_by_num(text,number)
-  debug(  "PERFECTO_ACTIONS:PM_enter_search_field_by_num")
+  debug(  "PM_ACTIONS:PM_enter_search_field_by_num")
   xpath = ".//search[#{number}]"  
   encodedXpath = URI::encode(xpath)
   encodedText = URI::encode(text)
@@ -546,18 +546,18 @@ end
 ##############################################################################################
 
 def PM_unsupported()
-    raise ("Unsupported by calabash-perfecto")
+    raise ("Unsupported by calabash-perfectomobile")
 end
 
 def  PM_no_screenshot_needed()
-  puts "No need to take screenshot manually, it will be included in PerfectoMobile report in case of failure or error"
+  puts "No need to take screenshot manually, it will be included in PM report in case of failure or error"
 end
 ##############################################################################################
 # General helper functions
 ##############################################################################################
 
 def debug(text)
-  if ENV["PERFECTO_DEBUG"] != nil
+  if ENV["PM_DEBUG"] != nil
     puts "DEBUG:"+text      
   end
 
@@ -568,13 +568,13 @@ def gotoUrl(url)
     runCommand("browser","goto",param)  
 end 
     
-## Execute command on PerfectoMobile      
+## Execute command on PM device    
  
 def runCommand(command, subcommand, param, raiseError)
     
-    urlStr = "https://#{$PerfectoCloud}/services/executions/#{@runID}?user=#{$PerfectoUser}&password=#{$PerfectoPassword}&operation=command&command=#{command}&subcommand=#{subcommand}&param.handsetId=#{$PerfectoDevice}#{param}"
+    urlStr = "https://#{$PMCloud}/services/executions/#{@runID}?user=#{$PMUser}&password=#{$PMPassword}&operation=command&command=#{command}&subcommand=#{subcommand}&param.handsetId=#{$PMDevice}#{param}"
     uri = URI.parse ("#{urlStr}")
-    debug ("CALL PERFECTO :  run CMD : #{urlStr}")
+    debug ("CALL PM : run CMD : #{urlStr}")
            
     http = Net::HTTP.new(uri.host, uri.port)
 		http.use_ssl = true
@@ -591,7 +591,7 @@ def runCommand(command, subcommand, param, raiseError)
     outcome = pm_rc['reason']
     reason = pm_rc['description']
  
-    debug ("**RETURN VAL FROM PERFECTO:#{outcome}:#{reason}")
+    debug ("**RETURN VAL FROM PM:#{outcome}:#{reason}")
      
     if (raiseError)     
       if outcome != 'Success'  

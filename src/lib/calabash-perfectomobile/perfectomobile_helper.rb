@@ -1,26 +1,26 @@
- require 'calabash-perfecto/PerfectoActions'
+ require 'calabash-perfectomobile/perfectomobile_helper'
  
 # This flag will be raised after first install
-$PerfectoInstallFlag = false 
+$PMInstallFlag = false 
 
 # This flag will be raised after params have already been loaded
-$PerfectoLoadedParamsFlag = false 
+$PMLoadedParamsFlag = false 
 
- def beforePerfecto()
+ def beforePM()
  
-   debug( "***********beforePerfecto() ")
+   debug( "***********beforePM() ")
    
-   getPerfectoParams
+   getPMParams
  
-   # Before Perfecto
+   # Before PM
    # connect to the cloud and start execution ( get execID)
-   startPerfectoMobileCloud
+   startPMCloud
          
    #puts "##   openDevice" 
    openDevice
 
    #puts "##   installAP" 
-   installPerfecto
+   installPM
    
     #puts "##  startApp"
    startApp
@@ -28,12 +28,12 @@ $PerfectoLoadedParamsFlag = false
   end
 
 
-def afterPerfecto()
+def afterPM()
   
     puts "Closing device ... "
     runCommand("handset","close","",true)
 
-    urlStr=  "https://#{$PerfectoCloud}/services/executions/#{@runID}?user=#{$PerfectoUser}&password=#{$PerfectoPassword}&operation=end"
+    urlStr=  "https://#{$PMCloud}/services/executions/#{@runID}?user=#{$PMUser}&password=#{$PMPassword}&operation=end"
     uri = URI.parse ("#{urlStr}")
          
     http = Net::HTTP.new(uri.host, uri.port)
@@ -52,52 +52,51 @@ def afterPerfecto()
 end
   
 
-  def getPerfectoParams
+  def getPMParams
     debug ("Getting params ...")
     # If not yet loaded parameters - load now
-    if !$PerfectoLoadedParamsFlag 
+    if !$PMLoadedParamsFlag 
       # Install on every test ?
-      if ENV["PERFECTO_PARAM_INSTALL"] != nil
-        $PerfectoReinstallEveryTest = true      
+      if ENV["PM_PARAM_INSTALL"] != nil
+        $PMReinstallBeforeTests = true      
       end
-      if ENV["PERFECTO_PARAM_APPNAME"] != nil
-        $PerfectoAppName = ENV["PERFECTO_PARAM_APPNAME"]
+      if ENV["PM_PARAM_APPNAME"] != nil
+        $PMAppName = ENV["PM_PARAM_APPNAME"]
       end
-      if ENV["PERFECTO_UPLOAD_LOCATION"] != nil
-        $PerfectoUploadLocation = ENV["PERFECTO_UPLOAD_LOCATION"]
+      if ENV["PM_UPLOAD_LOCATION"] != nil
+        $PMUploadLocation = ENV["PM_UPLOAD_LOCATION"]
       end
-      if ENV["PERFECTO_PARAM_CLOUD"] != nil
-        $PerfectoCloud = ENV["PERFECTO_PARAM_CLOUD"]
+      if ENV["PM_PARAM_CLOUD"] != nil
+        $PMCloud = ENV["PM_PARAM_CLOUD"]
       end
-      if ENV["PERFECTO_PARAM_USER"] != nil
-        $PerfectoUser = ENV["PERFECTO_PARAM_USER"]
+      if ENV["PM_PARAM_USER"] != nil
+        $PMUser = ENV["PM_PARAM_USER"]
       end
-      if ENV["PERFECTO_PARAM_PASSWORD"] != nil
-        $PerfectoPassword = ENV["PERFECTO_PARAM_PASSWORD"]
+      if ENV["PM_PARAM_PASSWORD"] != nil
+        $PMPassword = ENV["PM_PARAM_PASSWORD"]
       end
-      if ENV["PERFECTO_PARAM_DEVICE"] != nil
-        $PerfectoDevice = ENV["PERFECTO_PARAM_DEVICE"]
+      if ENV["PM_PARAM_DEVICE"] != nil
+        $PMDevice = ENV["PM_PARAM_DEVICE"]
       end
-      if ENV["PERFECTO_REPORT_DIR"] != nil
-        $PerfectoReportDir = ENV["PERFECTO_REPORT_DIR"]
+      if ENV["PM_REPORT_DIR"] != nil
+        $PMReportDir = ENV["PM_REPORT_DIR"]
       end
       # path to apk/iap file
-      $PerfectoAppFile = ENV["PERFECTO_APP_FILE"]
+      $PMAppFile = ENV["PM_APP_FILE"]
       # Done loading params - don't do it again
-      $PerfectoLoadedParamsFlag = true;
+      $PMLoadedParamsFlag = true;
     end
  end
   
- def installPerfecto
-   # User requests to reinstall each scenario --> set value of install flag to false
-   if $PerfectoReinstallEveryTest
-     $PerfectoInstallFlag = false;
-   end
-  
+ def installPM
+    
    # User requests to install and install had not yet been performed --> install
-   if !$PerfectoInstallFlag and $PerfectoReinstallEveryTest
-     upload_and_install_app($PerfectoAppFile)
-     $PerfectoInstallFlag = true;
+   if !$PMInstallFlag and $PMReinstallBeforeTests
+     upload_and_install_app($PMAppFile)
+     # User requests to reinstall each scenario --> set value of install flag to false
+     if !$PMReinstallBetweenScenarios
+       $PMInstallFlag = true;
+     end
    end
  end
   
@@ -105,7 +104,7 @@ end
     
     puts "Uninstalling ..."
     # Do not raise error because application may not be installed
-    encodedAppName = CGI.escape("#{$PerfectoAppName}") 
+    encodedAppName = CGI.escape("#{$PMAppName}") 
     runCommand("application", "uninstall", "&param.name=#{encodedAppName}" , false)
    
     puts "Uploading ..."
@@ -113,9 +112,9 @@ end
     # TODO - file name + apk/ipa 
     appFileNoPath = getAppFileNoPath(file)
     encodedAppFileNoPath = URI::encode(appFileNoPath) 
-    encodedKey = "#{$PerfectoUploadLocation}/"+encodedAppFileNoPath
+    encodedKey = "#{$PMUploadLocation}/"+encodedAppFileNoPath
     debug( "Uploading to "+encodedKey) 
-    url = "https://#{$PerfectoCloud}/services/repositories/media/#{encodedKey}?operation=upload&user=#{$PerfectoUser}&password=#{$PerfectoPassword}&overwrite=true";
+    url = "https://#{$PMCloud}/services/repositories/media/#{encodedKey}?operation=upload&user=#{$PMUser}&password=#{$PMPassword}&overwrite=true";
     debug( url)
      
     uri = URI.parse(url)
@@ -130,8 +129,7 @@ end
     #INSTALL
     puts "Installing ..."
     runCommand("application", "install", "&param.instrument=noinstrument&param.file=" + encodedKey , true)
-    # Close perfecto and execution
-    puts "Install  successful"
+    puts "Install completed successfully"
     sleep(5)
   end
   
@@ -141,11 +139,11 @@ end
   end
   
 def downloadReport
-  downloadRep = "https://#{$PerfectoCloud}/services/reports/#{@repID}?operation=download&user=#{$PerfectoUser}&password=#{$PerfectoPassword}&format=pdf";
+  downloadRep = "https://#{$PMCloud}/services/reports/#{@repID}?operation=download&user=#{$PMUser}&password=#{$PMPassword}&format=pdf";
   debug("Download report repID:#{@repID}")
   repSuffix = @repID.split("/").last
   repSuffix = repSuffix.split(".").first
-  reportFile = "#{$PerfectoReportDir}\\pmRep_#{repSuffix}.pdf" 
+  reportFile = "#{$PMReportDir}\\pmReport_#{repSuffix}.pdf" 
   debug("Download report repID:#{@repID} to #{reportFile}")
   require 'open-uri'
   open(reportFile, 'wb') do |file|

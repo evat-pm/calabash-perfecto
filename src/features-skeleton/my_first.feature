@@ -1,4 +1,4 @@
-Feature: Calabash-perfecto Testing - sample file
+Feature: Calabash-perfectomobile Testing - sample file
  
 # Scenario: log in
 #    When I enter "myUser" into input field number 1

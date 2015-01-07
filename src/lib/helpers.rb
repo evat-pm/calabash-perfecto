@@ -3,7 +3,7 @@ require 'zip/zip'
 require 'tempfile'
 require 'escape'
 require 'rbconfig'
-require 'calabash-perfecto/java_keystore'
+require 'calabash-perfectomobile/java_keystore'
 
 def package_name(app)
   package_line = aapt_dump(app, "package").first
@@ -32,11 +32,11 @@ def checksum(file_path)
 end
 
 def test_server_path(apk_file_path)
-  #"test_servers/#{checksum(apk_file_path)}_#{Calabash::Perfecto::VERSION}.apk"
+  #"test_servers/#{checksum(apk_file_path)}_#{Calabash::PerfectoMobile::VERSION}.apk"
 end
 
 def build_test_server_if_needed(app_path)
-puts "No need to build test server for perfecto"
+puts "No need to build test server for PM"
 #  unless File.exist?(test_server_path(app_path))
 #    if ARGV.include? "--no-build"
 #      puts "No test server found for this combination of app and calabash version. Exiting!"

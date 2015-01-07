@@ -43,13 +43,13 @@ end
 
 
 Then /^I (?:press|touch) (?:input|text) field number (\d+)$/ do |index|
-  # Perfecto gives error when trying to "click" a text field
+  # PM gives error when trying to "click" a text field
   PM_unsupported()
 end
 
 
 Then /^I (?:press|touch) the "([^\"]*)" (?:input|text) field$/ do |name|
-  # Perfecto gives error when trying to "click" a text field
+  # PM gives error when trying to "click" a text field
   PM_unsupported()
 end
 
