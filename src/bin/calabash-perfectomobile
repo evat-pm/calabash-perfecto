@@ -8,18 +8,21 @@ require 'calabash-perfectomobile/env'
 require 'calabash-perfectomobile/version'
 
 require 'optparse'
+
 options = {}
 optparse = OptionParser.new do|opts|   
-	opts.banner = "Usage: calabash-perfectomobile [options] apk-file/ipa-file "    
+	opts.banner = "Usage: calabash-perfectomobile [options] apk-file/ipa-file "  
+	opts.separator ""
+	
 	# Define the options, and what they do   
 
 	options[:version] = false   
-	opts.on( '-v', '--version', 'Get version' ) do     
+	opts.on( '-v', '--version', 'Get calabash-perfectomobile version' ) do     
 		options[:version] = true   
 	end    
 
 	options[:install] = false   
-	opts.on( '-i', '--install', 'Optional - Install app before testing' ) do     
+	opts.on( '-i', '--install', 'Optional - Install app before the first test scenario' ) do     
 		options[:install] = true   
 	end    
 
@@ -29,22 +32,22 @@ optparse = OptionParser.new do|opts|
 	end    
 
   	options[:appName] = nil   
-	opts.on( '-a APPNAME', '--app APPNAME', 'App name is APPNAME' ) do|appName|     
+	opts.on( '-a APPNAME', '--app APPNAME', 'Application name is APPNAME' ) do|appName|     
 		options[:appName] = appName   
 	end    
 
 	options[:cloud] = nil   
-	opts.on( '-c CLOUD', '--cloud CLOUD', 'Connect to cloud CLOUD' ) do|cloud|     
+	opts.on( '-c CLOUD', '--cloud CLOUD', 'Connect to MobileCloud CLOUD' ) do|cloud|     
 		options[:cloud] = cloud   
 	end    
 
   options[:user] = nil   
-	opts.on( '-u USER', '--user USER', 'Connect as USER' ) do|user|     
+	opts.on( '-u USER', '--user USER', 'Connect with username USER' ) do|user|     
 		options[:user] = user   
 	end    
 
   options[:password] = nil   
-	opts.on( '-p PASSWORD', '--password PASSWORD', 'Connect with PASSWORD' ) do|password|     
+	opts.on( '-p PASSWORD', '--password PASSWORD', 'Connect with password PASSWORD' ) do|password|     
 		options[:password] = password   
 	end    
 
@@ -63,10 +66,13 @@ optparse = OptionParser.new do|opts|
 	opts.on( '-h', '--help', 'You\'re looking at it' ) do     
 		puts opts     
 		exit   
-	end 
+	end
 
+	opts.separator ""
+    opts.separator "Additional ways to configure the calabash-perfectomobile parameters:"
+	opts.separator "- Update the env.rb file located in features\\support"
+	opts.separator "- Add to your environment variables see README file, https://github.com/calabash/calabash-perfectomobile"
 end 
-
 optparse.parse!  
 if options[:version]
   puts "calabash-perfectomobile #{Calabash::PerfectoMobile::VERSION}"
