@@ -57,32 +57,32 @@ end
     # If not yet loaded parameters - load now
     if !$PMLoadedParamsFlag 
       # Install on every test ?
-      if ENV["PM_PARAM_INSTALL"] != nil
+      if ENV["CALABASH_PERFECTO_MOBILE_INSTALL"] != nil
         $PMReinstallBeforeTests = true      
       end
-      if ENV["PM_PARAM_APPNAME"] != nil
-        $PMAppName = ENV["PM_PARAM_APPNAME"]
+      if ENV["CALABASH_PERFECTO_MOBILE_APP_NAME"] != nil
+        $PMAppName = ENV["CALABASH_PERFECTO_MOBILE_APP_NAME"]
       end
-      if ENV["PM_UPLOAD_LOCATION"] != nil
-        $PMUploadLocation = ENV["PM_UPLOAD_LOCATION"]
+      if ENV["CALABASH_PERFECTO_MOBILE_UPLOAD_LOCATION"] != nil
+        $PMUploadLocation = ENV["CALABASH_PERFECTO_MOBILE_UPLOAD_LOCATION"]
       end
-      if ENV["PM_PARAM_CLOUD"] != nil
-        $PMCloud = ENV["PM_PARAM_CLOUD"]
+      if ENV["CALABASH_PERFECTO_MOBILE_MOBILECLOUD"] != nil
+        $PMCloud = ENV["CALABASH_PERFECTO_MOBILE_MOBILECLOUD"]
       end
-      if ENV["PM_PARAM_USER"] != nil
-        $PMUser = ENV["PM_PARAM_USER"]
+      if ENV["CALABASH_PERFECTO_MOBILE_USER"] != nil
+        $PMUser = ENV["CALABASH_PERFECTO_MOBILE_USER"]
       end
-      if ENV["PM_PARAM_PASSWORD"] != nil
-        $PMPassword = ENV["PM_PARAM_PASSWORD"]
+      if ENV["CALABASH_PERFECTO_MOBILE_PASSWORD"] != nil
+        $PMPassword = ENV["CALABASH_PERFECTO_MOBILE_PASSWORD"]
       end
-      if ENV["PM_PARAM_DEVICE"] != nil
-        $PMDevice = ENV["PM_PARAM_DEVICE"]
+      if ENV["CALABASH_PERFECTO_MOBILE_DEVICE"] != nil
+        $PMDevice = ENV["CALABASH_PERFECTO_MOBILE_DEVICE"]
       end
-      if ENV["PM_REPORT_DIR"] != nil
-        $PMReportDir = ENV["PM_REPORT_DIR"]
+      if ENV["CALABASH_PERFECTO_MOBILE_REPORT_DIR"] != nil
+        $PMReportDir = ENV["CALABASH_PERFECTO_MOBILE_REPORT_DIR"]
       end
       # path to apk/iap file
-      $PMAppFile = ENV["PM_APP_FILE"]
+      $PMAppFile = ENV["CALABASH_PERFECTO_MOBILE_APP_FILE"]
       # Done loading params - don't do it again
       $PMLoadedParamsFlag = true;
     end
@@ -139,14 +139,21 @@ end
   end
   
 def downloadReport
-  downloadRep = "https://#{$PMCloud}/services/reports/#{@repID}?operation=download&user=#{$PMUser}&password=#{$PMPassword}&format=pdf";
-  debug("Download report repID:#{@repID}")
-  repSuffix = @repID.split("/").last
-  repSuffix = repSuffix.split(".").first
-  reportFile = "#{$PMReportDir}\\pmReport_#{repSuffix}.pdf" 
-  debug("Download report repID:#{@repID} to #{reportFile}")
-  require 'open-uri'
-  open(reportFile, 'wb') do |file|
-    file << open("#{downloadRep}").read
-  end
-end  
+ downloadRep = "https://#{$PMCloud}/services/reports/#{@repID}?operation=download&user=#{$PMUser}&password=#{$PMPassword}&format=pdf";
+ debug("Download report repID:#{@repID}")
+ repSuffix = @repID.split("/").last
+ repSuffix = repSuffix.split(".").first
+ if (!$PMReportDir.empty?) and not ($PMReportDir.end_with? "/" or $PMReportDir.end_with? "\\")
+  separator = "/"
+     if $PMReportDir.include? "\\"
+       separator = "\\"
+     end
+   $PMReportDir = $PMReportDir + separator
+ end
+ reportFile = "#{$PMReportDir}pmReport_#{repSuffix}.pdf" 
+ debug("Download report repID:#{@repID} to #{reportFile}")
+ require 'open-uri'
+ open(reportFile, 'wb') do |file|
+   file << open("#{downloadRep}").read
+ end
+end

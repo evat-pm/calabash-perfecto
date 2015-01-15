@@ -6,32 +6,45 @@ end
 
 require ENV["CALABASH_MODE"]+'/cucumber'
   
-## Perfecto Mobile Parameters 
-# All of which may be overriden by :
-# - environment variables 
-# - command line arguments
+## Perfecto Mobile Parameters
+## To use, uncomment variables and enter the values 
+# Note: these can be overridden by environment variables, and command line arguments
 
-# Default app file (for installing the app on the device)
-#$PMAppFile = "<APK_OR_IPA_FILE>"
-# Application name (for starting the app)
-#$PMAppName = "<YOUR_APP_NAME>"
-# Where to upload the apk/ipa file to (directory in repository)
-$PMUploadLocation = "PUBLIC:calabash"
+## Application file for installing the app on the device
+## Example (app located in the current working directory): myApp.ipa
+## Example (with path to its directory): C:/myApps/myApp.ipa 
+# $PMAppFile = "<APK_OR_IPA_FILE>"
 
-# Connection credentials 
-#$PMCloud = "<YOUR_PM_CLOUD_HERE>"
-#$PMUser = "<YOUR_PM_CLOUD_USER_HERE>"
-#$PMPassword= "<YOUR_PM_CLOUD_PASSWORD_HERE>"
-#$PMDevice = "<YOUR_PM_DEVICE_ID_HERE>"
+## Application name for starting the app, as it is displayed on the device screen or the application manager
+## You can also find the application name in the device application list (in the MobileCloud Interactive view).
+## Example: myAppName
+# $PMAppName = "<YOUR_APP_NAME>"
 
-# Should the app be re-installed before running the tests (feature file/s) ?
-#$PMReinstallBeforeTests = false
-# In case that $PMReinstallBeforeTests is true (or you passed -i in the command line)
-# - Should the app be re-installed before running each scenario ?
-$PMReinstallBetweenScenarios = false
+## MobileCloud repository directory where to upload the apk/ipa file.
+## Default is the PRIVATE repository.
+## For example: PRIVATE:Calabash/AndroidApps
+$PMUploadLocation = ""
 
-# Directory where reports should be downloaded to
-#$PMReportDir = "<YOUR_REPORT_DIR>"
+## MobileCloud connection credentials
+# $PMCloud = "<YOUR_PERFECTO_MOBILE_CLOUD_HERE>"
+# $PMUser = "<YOUR_PERFECTO_MOBILE_CLOUD_USER_HERE>"
+# $PMPassword= "<YOUR_PERFECTO_MOBILE_CLOUD_PASSWORD_HERE>"
 
-# Default timeout for commands 
+## Device id of the device in the MobileCloud to connect to.
+# $PMDevice = "<YOUR_PERFECTO_MOBILE_DEVICE_ID_HERE>"
+
+## Re-install the app before running the test/s (feature file/s)?
+## Default is false.
+# $PMReinstallBeforeTests = false
+
+## In case $PMReinstallBeforeTests is true (or -i was used in the command)
+## Re-install the app before running each scenario?
+## Default is false
+# $PMReinstallBetweenScenarios = false
+
+## Directory where to download the reports
+## Default is the current working directory
+$PMReportDir = ""
+
+## Default timeout for wait commands
 $defaultTimeout=2

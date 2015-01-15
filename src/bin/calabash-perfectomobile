@@ -73,40 +73,40 @@ if options[:version]
   exit
 end 
 if options[:install]
-  ENV["PM_PARAM_INSTALL"] = 'true'
+  ENV["CALABASH_PERFECTO_MOBILE_INSTALL"] = 'true'
   #puts "PARSE: Install before the first test"
 end 
 if options[:location]
-  ENV["PM_UPLOAD_LOCATION"] = options[:location]
-  #puts "PARSE: Upload location "+ENV["PM_UPLOAD_LOCATION"]
+  ENV["CALABASH_PERFECTO_MOBILE_UPLOAD_LOCATION"] = options[:location]
+  #puts "PARSE: Upload location "+ENV["CALABASH_PERFECTO_MOBILE_UPLOAD_LOCATION"]
 end 
 if options[:appName]
-  ENV["PM_PARAM_APPNAME"] = options[:appName]
-  #puts "PARSE: App name "+ENV["PM_PARAM_APPNAME"]
+  ENV["CALABASH_PERFECTO_MOBILE_APP_NAME"] = options[:appName]
+  #puts "PARSE: App name "+ENV["CALABASH_PERFECTO_MOBILE_APP_NAME"]
 end 
 if options[:cloud]
-  ENV["PM_PARAM_CLOUD"] = options[:cloud]
-  #puts "PARSE: Connecting to cloud "+ENV["PM_PARAM_CLOUD"]
+  ENV["CALABASH_PERFECTO_MOBILE_MOBILECLOUD"] = options[:cloud]
+  #puts "PARSE: Connecting to cloud "+ENV["CALABASH_PERFECTO_MOBILE_MOBILECLOUD"]
 end 
 if options[:user]
-  ENV["PM_PARAM_USER"] = options[:user]
-  #puts "PARSE: Connecting as "+ENV["PM_PARAM_USER"]
+  ENV["CALABASH_PERFECTO_MOBILE_USER"] = options[:user]
+  #puts "PARSE: Connecting as "+ENV["CALABASH_PERFECTO_MOBILE_USER"]
 end 
 if options[:password]
-  ENV["PM_PARAM_PASSWORD"] = options[:password]
-  #puts "PARSE: Connecting with password "+ENV["PM_PARAM_PASSWORD"]
+  ENV["CALABASH_PERFECTO_MOBILE_PASSWORD"] = options[:password]
+  #puts "PARSE: Connecting with password "+ENV["CALABASH_PERFECTO_MOBILE_PASSWORD"]
 end 
 if options[:device]
-  ENV["PM_PARAM_DEVICE"] = options[:device]
-  #puts "PARSE: Connecting to device with id "+ENV["PM_PARAM_DEVICE"]
+  ENV["CALABASH_PERFECTO_MOBILE_DEVICE"] = options[:device]
+  #puts "PARSE: Connecting to device with id "+ENV["CALABASH_PERFECTO_MOBILE_DEVICE"]
 end
 if options[:report]
-  ENV["PM_REPORT_DIR"] = options[:report]
-  #puts "PARSE: Downloading reports to "+ENV["PM_REPORT_DIR"]
+  ENV["CALABASH_PERFECTO_MOBILE_REPORT_DIR"] = options[:report]
+  #puts "PARSE: Downloading reports to "+ENV["CALABASH_PERFECTO_MOBILE_REPORT_DIR"]
 end
 
-ENV["PM_APP_FILE"] =  ARGV.shift  
-#puts "PARSE: App file : "+ENV["PM_APP_FILE"] 
+ENV["CALABASH_PERFECTO_MOBILE_APP_FILE"] =  ARGV.shift  
+#puts "PARSE: App file : "+ENV["CALABASH_PERFECTO_MOBILE_APP_FILE"] 
 
 #sleep 5
 #puts "PARSE: exiting ..."
