@@ -1,3 +1,4 @@
+# Modified by Perfecto Mobile Ltd.
 
 Then /^I long press "([^\"]*)" and select item number "([^\"]*)"$/ do |text_to_press, index|
   PM_unsupported()

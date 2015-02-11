@@ -1,3 +1,5 @@
+# Modified by Perfecto Mobile Ltd.
+
 Then /^I go back$/ do
   PM_press_phone_back_button()
 end
@@ -51,3 +53,17 @@ Then /^I drag from (\d+):(\d+) to (\d+):(\d+) moving with (\d+) steps$/ do |from
   PM_drag(fromX,toX,fromY,toY,steps)
 end
    
+## iOS step
+Then /^I pinch to zoom (in|out)$/ do |in_out|
+  PM_unsupported()
+end
+
+## iOS step
+Then /^I pinch to zoom (in|out) on "([^\"]*)"$/ do |in_out, name|
+  PM_unsupported()
+end
+
+## iOS step
+Then /^I scroll (left|right|up|down) on "([^\"]*)"$/ do |dir,name|
+  PM_unsupported()
+end

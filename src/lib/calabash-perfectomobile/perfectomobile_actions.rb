@@ -1,64 +1,7 @@
+# Modified by Perfecto Mobile Ltd.
 require 'net/http'
 require 'cgi'
 
-##############################################################################################
-# Init functions
-##############################################################################################
-
-   
-    
-def startPMCloud  
-      
-    puts "Connecting to Perfecto Mobile cloud ..."
-    debug ("CLOUD : "+$PMCloud)
-    urlStr = "https://#{$PMCloud}/services/executions?user=#{$PMUser}&password=#{$PMPassword}&operation=start"
-    uri = URI.parse("#{urlStr}")
-        
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new uri
-    
-    request = Net::HTTP::Get.new(uri.request_uri)
-    response = http.request(request)
-		
-    val =  response.body
-    matches = val.split(/:" */)[1]
-    @runID  = matches.split(/" */)[0]
-    valRep =val.split(/:" */)[2]  
-    @repID  = valRep.split(/" */)[0]
-     
-end
-
-def openDevice()
-    puts "Opening device ..."
-    PM_runCommand("handset","open","",true)
-    
-    ## getting the device os [iphone / Android ]
-    urlStr=  "https://#{$PMCloud}/services/handsets/#{$PMDevice}?user=#{$PMUser}&password=#{$PMPassword}&operation=info"
-    uri = URI.parse("#{urlStr}")
-         
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new uri
-       
-    request = Net::HTTP::Get.new(uri.request_uri)
-    response = http.request(request)
-      
-    val =  response.body
-   matches = val.split("<os>")[1]
-   @deviceOS  = matches.split("</os>")[0]
-   debug("DEVICE OS:#{@deviceOS}")
-   
-end
-
-def startApp()
-        puts "Starting app ..."
-        encodedAppName = CGI.escape("#{$PMAppName}") 
-        PM_runCommand("application","open","&param.name=#{encodedAppName}",true)  
-end
-    
 ##############################################################################################
 # Screen navigation / Phone Buttons - called from navigation_steps.rb
 ##############################################################################################
@@ -121,6 +64,8 @@ def PM_swipe(startPoint,endPoint,duration)
   param = "&param.start=#{encodedStartPoint}&param.end=#{encodedEndPoint}&param.duration=#{duration}"
   PM_runCommand("touch","swipe",param,true)    
 end
+
+
 ##############################################################################################
 # Rotate
 ##############################################################################################
@@ -134,11 +79,11 @@ end
 
 ###################################################################33
 #  screenShot
-def PM_screenShot()
+##################################################################33
+def PM_screenshot()
   param = ""
   PM_runCommand("screen","image",param,true)  
 end
-##################################################################33
 ##############################################################################################
 # Wait
 ##############################################################################################
@@ -179,7 +124,6 @@ def PM_radiobutton_click_by_text(text)
 	 xpath1 = ".//radiobutton[text()='"
      xpath2 = "']"
      encodedXpath = getEncodedXpath(xpath1, text, xpath2)
-	 #puts " >>>>>  #{encodedXpath}"
      param = "&param.value=#{encodedXpath}&param.by=xpath"
      PM_runCommand("application.element","click",param,true)  
      
@@ -191,7 +135,6 @@ def PM_radiobutton_verify_is_clicked(text,clicked)
      xpath1 = ".//radiobutton[text()='"
      xpath2 = "']"
      encodedXpath = getEncodedXpath(xpath1, text, xpath2)
-     #puts " >>>>>  #{encodedXpath}"
      param = "&param.value=#{encodedXpath}&param.by=xpath&param.property=checked"
      result = PM_runCommand("application.element","info",param,true)  
      isChecked =  result['returnValue']
@@ -388,9 +331,6 @@ def PM_validate_textfield_by_name(name,appear)
 end
 
 def PM_enter_text_to_field_by_name(text,name)
-  # TODO - test
-  # There was no app with named field at time of development to test this predefined step
-  
   debug(  "PM_ACTIONS:PM_enter_text_to_field_by_name")
   xpath1 = ".//textfield[@name='"
   xpath2 = "']"
@@ -538,24 +478,29 @@ def getEncodedXpath(xpath1, value, xpath2)
     encodedXpath = "#{encodedXpath1}#{value}#{encodedXpath2}" 
     return CGI.escape(encodedXpath)
 end
+
+def getResponse(urlStr)
+  uri = URI.parse("#{urlStr}")
+
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  request = Net::HTTP::Get.new uri
+
+  request = Net::HTTP::Get.new(uri.request_uri)
+  response = http.request(request)
+
+  return response.body
+end
+
     
 ## Execute command on PM device    
  
 def PM_runCommand(command, subcommand, param, raiseError)
     
     urlStr = "https://#{$PMCloud}/services/executions/#{@runID}?user=#{$PMUser}&password=#{$PMPassword}&operation=command&command=#{command}&subcommand=#{subcommand}&param.handsetId=#{$PMDevice}#{param}"
-    uri = URI.parse("#{urlStr}")
     debug ("CALL PM : run CMD : #{urlStr}")
-           
-    http = Net::HTTP.new(uri.host, uri.port)
-		http.use_ssl = true
-		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new uri
-       
-    request = Net::HTTP::Get.new(uri.request_uri)
-		response = http.request(request)
-			
-    val =  response.body
+    val = getResponse(urlStr)
     pm_rc = JSON.parse(val)
     
     debug ("********pm_rc:#{pm_rc}")

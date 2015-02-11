@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
 
+# Modified by Perfecto Mobile Ltd.
+
 require 'fileutils'
 require 'rbconfig'
-require 'calabash-perfectomobile/helpers'
-require 'calabash-perfectomobile/java_keystore'
-require 'calabash-perfectomobile/env'
 require 'calabash-perfectomobile/version'
 
 require 'optparse'
@@ -80,46 +79,30 @@ if options[:version]
 end 
 if options[:install]
   ENV["CALABASH_PERFECTO_MOBILE_INSTALL"] = 'true'
-  #puts "PARSE: Install before the first test"
 end 
 if options[:location]
   ENV["CALABASH_PERFECTO_MOBILE_UPLOAD_LOCATION"] = options[:location]
-  #puts "PARSE: Upload location "+ENV["CALABASH_PERFECTO_MOBILE_UPLOAD_LOCATION"]
 end 
 if options[:appName]
   ENV["CALABASH_PERFECTO_MOBILE_APP_NAME"] = options[:appName]
-  #puts "PARSE: App name "+ENV["CALABASH_PERFECTO_MOBILE_APP_NAME"]
 end 
 if options[:cloud]
   ENV["CALABASH_PERFECTO_MOBILE_MOBILECLOUD"] = options[:cloud]
-  #puts "PARSE: Connecting to cloud "+ENV["CALABASH_PERFECTO_MOBILE_MOBILECLOUD"]
 end 
 if options[:user]
   ENV["CALABASH_PERFECTO_MOBILE_USER"] = options[:user]
-  #puts "PARSE: Connecting as "+ENV["CALABASH_PERFECTO_MOBILE_USER"]
 end 
 if options[:password]
   ENV["CALABASH_PERFECTO_MOBILE_PASSWORD"] = options[:password]
-  #puts "PARSE: Connecting with password "+ENV["CALABASH_PERFECTO_MOBILE_PASSWORD"]
 end 
 if options[:device]
   ENV["CALABASH_PERFECTO_MOBILE_DEVICE"] = options[:device]
-  #puts "PARSE: Connecting to device with id "+ENV["CALABASH_PERFECTO_MOBILE_DEVICE"]
 end
 if options[:report]
   ENV["CALABASH_PERFECTO_MOBILE_REPORT_DIR"] = options[:report]
-  #puts "PARSE: Downloading reports to "+ENV["CALABASH_PERFECTO_MOBILE_REPORT_DIR"]
 end
 
 ENV["CALABASH_PERFECTO_MOBILE_APP_FILE"] =  ARGV.shift  
-#puts "PARSE: App file : "+ENV["CALABASH_PERFECTO_MOBILE_APP_FILE"] 
-
-#sleep 5
-#puts "PARSE: exiting ..."
-#exit
-
-
-ENV["CALABASH_MODE"] = 'calabash-perfectomobile'
 
 # for ruby 1.9.1 and earlier
 unless defined? RbConfig.ruby
@@ -131,32 +114,20 @@ end
 
 if File.exist? "features/support/app_life_cycle_hooks.rb"
   content = IO.read("features/support/app_life_cycle_hooks.rb")
-
 end
 
-
-require File.join(File.dirname(__FILE__), "calabash-perfectomobile-helpers")
-require File.join(File.dirname(__FILE__), "calabash-perfectomobile-generate")
-require File.join(File.dirname(__FILE__), "calabash-perfectomobile-build")
 require File.join(File.dirname(__FILE__), "calabash-perfectomobile-run")
-require File.join(File.dirname(__FILE__), "calabash-perfectomobile-setup")
-require File.join(File.dirname(__FILE__), "calabash-perfectomobile-console")
 
 @features_dir = File.join(FileUtils.pwd, "features")
 @support_dir = File.join(@features_dir, "support")
 @source_dir = File.join(File.dirname(__FILE__), '..', 'features-skeleton')
 @script_dir = File.join(File.dirname(__FILE__), '..', 'scripts')
 
-def is_apk_file?(file_path)
-  file_path.end_with? ".apk" and File.exist? file_path
-end
-
 def relative_to_full_path(file_path)
   File.expand_path(file_path)
 end
 
-Env.exit_if_env_not_set_up
-if ARGV.empty? or not is_apk_file?(ARGV.first)
+if ARGV.empty?
   exit calabash_run()
 else
   exit calabash_run(relative_to_full_path(ARGV.shift))

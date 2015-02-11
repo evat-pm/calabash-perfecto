@@ -1,3 +1,5 @@
+# Modified by Perfecto Mobile Ltd.
+
 Then /^I am in "([^\"]*)"$/ do |location|
   PM_unsupported()
 end

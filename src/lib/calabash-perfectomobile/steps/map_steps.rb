@@ -1,3 +1,5 @@
+# Modified by Perfecto Mobile Ltd.
+
 When /^I centre the map at (-?\d+\.\d+), (-?\d+\.\d+)$/ do | lat, lon |
   PM_unsupported()
 end
@@ -39,5 +41,10 @@ Then /^the map should be centred at (-?\d+\.\d+), (-?\d+\.\d+)$/ do | lat, lon |
 end
 
 Then /^the map marker "([^\"]*)" should be highlighted$/ do | marker_title |
+  PM_unsupported()
+end
+
+## iOS step
+Then /^I touch (?:the)? user location$/ do
   PM_unsupported()
 end

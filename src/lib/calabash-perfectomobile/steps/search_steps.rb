@@ -1,3 +1,5 @@
+# Modified by Perfecto Mobile Ltd.
+
 Then /^I enter "([^\"]*)" into search field$/ do |text|
   PM_enter_search_field_by_num(text,1)
 end

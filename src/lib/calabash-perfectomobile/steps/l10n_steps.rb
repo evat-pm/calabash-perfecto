@@ -1,3 +1,5 @@
+# Modified by Perfecto Mobile Ltd.
+
 Then /^I press text of translated l10key (\d+)$/ do |l10key|
   PM_unsupported()
 end

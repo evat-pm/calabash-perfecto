@@ -1,3 +1,5 @@
+# Modified by Perfecto Mobile Ltd.
+
 Feature: Calabash-perfectomobile Testing - sample file
  
 # Scenario: log in

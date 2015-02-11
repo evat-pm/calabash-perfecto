@@ -1,8 +1,6 @@
-require 'calabash-perfectomobile/color_helper'
-require 'calabash-perfectomobile/operations'
+# Modified by Perfecto Mobile Ltd.
 
-World(Calabash::Android::ColorHelper)
-World(Calabash::Android::Operations)
+require 'calabash-perfectomobile/operations'
 
 AfterConfiguration do
   require 'calabash-perfectomobile/calabash_steps'
